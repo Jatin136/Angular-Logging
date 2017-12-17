@@ -13,7 +13,7 @@ export enum LogLevel {
 export class LogEntry {
   entryDate: Date = new Date();
   message = "";
-  level: LogLevel = LogLevel.Debug;
+  level: LogLevel = LogLevel.All;
   logWithDate = true;
   extraInfo: any[] = [];
 
@@ -53,27 +53,27 @@ export class LoggingService {
   }
 
   info(msg: string) {
-    console.log(msg);
+    return msg;
   }
 
   warn(msg: string, ...params: any[]) {
-    console.log(msg);
+    return msg;
   }
   
   error(msg: string) {
-    console.log(msg);
+    return msg;
   }
 
   debug(msg: string, ...params: any[]) {
-    console.log(msg);    
+    return msg;    
   }
 
   fatal(msg: string, ...params: any[]) {
-    console.log(msg);
+    return msg;
   }
 
   log(msg: string) {
-    console.log(msg);
+    return msg;
   }
 
   writeLog(msg: string, level: LogLevel, ...params: any[]) {
@@ -86,22 +86,22 @@ export class LoggingService {
       errorMsg = entry.buildLogString();
       switch (level) {
         case LogLevel.All:
-          this.log(entry.buildLogString());
+          console.log(this.log(entry.buildLogString()));
           break;
         case LogLevel.Error:
-          this.error(entry.buildLogString());
+          console.log(this.error(entry.buildLogString()));
           break;
         case LogLevel.Info:
-          this.info(entry.buildLogString());
+          console.log(this.info(entry.buildLogString()));
           break;
         case LogLevel.Debug:
-          this.debug(entry.buildLogString());
+          console.log(this.debug(entry.buildLogString()));
           break;
         case LogLevel.Fatal:
-          this.fatal(entry.buildLogString());
+          console.log(this.fatal(entry.buildLogString()));
           break;
         case LogLevel.Warn:
-          this.fatal(entry.buildLogString());
+          console.log(this.fatal(entry.buildLogString()));
           break;
         default:
           break;

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { LoggingService, LogLevel } from './logging.service';
+import { LoggerClass, LogPublisher, LocalStorage } from './logPublisher';
 
 @Component({
   selector: 'app-root',
@@ -8,29 +9,47 @@ import { LoggingService, LogLevel } from './logging.service';
 })
 export class AppComponent {
 
-  constructor (private loggingService: LoggingService) {  }
+  loggerClass: LoggerClass;
+  localStorage: LocalStorage;
+
+  constructor (private loggingService: LoggingService) { 
+    this.loggerClass = new LoggerClass(this.loggingService);
+    this.localStorage = new LocalStorage(this.loggingService);
+  }
+  
+  DeleteLocalStorageLog() {
+    this.localStorage.clear();
+  }
+
+  LocalStorageLog() {    
+    this.localStorage.log('Local Storage', LogLevel.Error, 'jatin', 'patel');
+  }
+
+  ClearLog() {    
+    this.loggerClass.clear();
+  }
 
   TestLog() {
-    this.loggingService.writeLog('test log', LogLevel.All, 'j', 'patel');
+    this.loggerClass.log('test log', LogLevel.All, 'j', 'patel');    
   }
 
   InfoLog() {
-    this.loggingService.writeLog('test log', LogLevel.Info , 'j', 'patel');
+    this.loggerClass.log('test log', LogLevel.Info, 'j', 'patel');
   }
 
   ErrorLog() {
-    this.loggingService.writeLog('test log', LogLevel.Error, 'j', 'patel');
+    this.loggerClass.log('test log', LogLevel.Error, 'j', 'patel');
   }
 
   FatalLog() {
-    this.loggingService.writeLog('fatal log', LogLevel.Fatal, 'j', 'patel');
+    this.loggerClass.log('test log', LogLevel.Fatal, 'j', 'patel');
   }
 
   WarnLog() {
-    this.loggingService.writeLog('Warn log', LogLevel.Warn, 'j', 'patel');
+    this.loggerClass.log('test log', LogLevel.Warn, 'j', 'patel');
   }
 
   DebugLog() {
-    this.loggingService.writeLog('Debug Level', LogLevel.Debug, 'j', 'patel');
+    this.loggerClass.log('test log', LogLevel.Debug, 'j', 'patel');
   }
 }
