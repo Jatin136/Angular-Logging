@@ -21,7 +21,8 @@ export class LogEntry {
     let msg = "";
 
     if (this.logWithDate) {
-      msg += "Date " + this.entryDate;
+      msg += "Date - " + this.entryDate;
+      msg += " - Type: " + LogLevel[this.level];
       msg += " - Message: " + this.message;
       if (this.extraInfo.length > 0) {
         msg += " - Extra Info " + this.formatParams(this.extraInfo);
@@ -51,37 +52,31 @@ export class LoggingService {
     return ret;
   }
 
-  info(msg: string, ...params: any[]) {
-    // tslint:disable-next-line:no-console
-    console.info(this.writeLog(msg, LogLevel.Info, params));
+  info(msg: string) {
+    console.log(msg);
   }
 
   warn(msg: string, ...params: any[]) {
-    console.warn(this.writeLog(msg, LogLevel.Warn, params));
+    console.log(msg);
   }
-
-  error(msg: string, ...params: any[]) {
-    console.error(this.writeLog(msg, LogLevel.Error, params));
+  
+  error(msg: string) {
+    console.log(msg);
   }
 
   debug(msg: string, ...params: any[]) {
-    // tslint:disable-next-line:no-console
-    console.debug(this.writeLog(msg, LogLevel.Debug, params));
+    console.log(msg);    
   }
 
   fatal(msg: string, ...params: any[]) {
-    console.log(this.writeLog(msg, LogLevel.Fatal, params));
+    console.log(msg);
   }
 
-  log(msg: string, ...params: any[]) {
-    console.log(this.writeLog(msg, LogLevel.All, params));
+  log(msg: string) {
+    console.log(msg);
   }
 
-  // writeLog(msg: string, ...params: any[]) {
-  //   this.Log(msg, LogLevel.All, params);
-  // }
-
-  writeLog(msg: string, level: LogLevel, params: any[]) {
+  writeLog(msg: string, level: LogLevel, ...params: any[]) {
     let errorMsg = '';
     if (this.shouldLog(level)) {
       const entry: LogEntry = new LogEntry();
@@ -89,16 +84,28 @@ export class LoggingService {
       entry.message = msg;
       entry.extraInfo = params;
       errorMsg = entry.buildLogString();
-      // switch (level) {
-      //   case LogLevel.All:
-      //     this.log(msg, params);
-      //     break;
-      //   case LogLevel.Error:
-      //     errorMsg = entry.buildLogString();
-      //     break;
-      //   default:
-      //     break;
-      // }
+      switch (level) {
+        case LogLevel.All:
+          this.log(entry.buildLogString());
+          break;
+        case LogLevel.Error:
+          this.error(entry.buildLogString());
+          break;
+        case LogLevel.Info:
+          this.info(entry.buildLogString());
+          break;
+        case LogLevel.Debug:
+          this.debug(entry.buildLogString());
+          break;
+        case LogLevel.Fatal:
+          this.fatal(entry.buildLogString());
+          break;
+        case LogLevel.Warn:
+          this.fatal(entry.buildLogString());
+          break;
+        default:
+          break;
+      }
     }
     return errorMsg;
   }
