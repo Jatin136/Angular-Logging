@@ -76,14 +76,15 @@ export class LoggingService {
     return msg;
   }
 
-  writeLog(msg: string, level: LogLevel, ...params: any[]) {
-    let errorMsg = '';
+  writeLog(msg: string, level: LogLevel, ...params: any[]): void {    
+    
     if (this.shouldLog(level)) {
+      
       const entry: LogEntry = new LogEntry();
       entry.level = level;
       entry.message = msg;
-      entry.extraInfo = params;
-      errorMsg = entry.buildLogString();
+      entry.extraInfo = params;      
+
       switch (level) {
         case LogLevel.All:
           console.log(this.log(entry.buildLogString()));
@@ -106,7 +107,6 @@ export class LoggingService {
         default:
           break;
       }
-    }
-    return errorMsg;
+    }    
   }
 }
