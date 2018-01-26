@@ -1,9 +1,10 @@
 import { LoggingService, LogLevel, LogEntry } from "./logging.service";
 
 export abstract class LogPublisher {
+    logType: string;
+
     abstract clear();
-    abstract log(msg: string, logLevel: LogLevel, ...params: any[]);
-    abstract logType: string;
+    abstract log(msg: string, logLevel: LogLevel, ...params: any[]);    
 }
 
 export class LoggerClass extends LogPublisher {
@@ -44,4 +45,14 @@ export class LocalStorage extends LogPublisher {
 
     logType: string = "localStorage";
 
+}
+
+export class ApiLog extends LogPublisher {    
+    
+    clear() {
+        throw new Error("Method not implemented.");
+    }
+    log(msg: string, logLevel: LogLevel, ...params: any[]) {
+        throw new Error("Method not implemented.");
+    }
 }
