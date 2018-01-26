@@ -1,4 +1,5 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
+import { Http, RequestOptions, Headers } from '@angular/http';
 
 export enum LogLevel {
   All = 0,
@@ -12,28 +13,28 @@ export enum LogLevel {
 
 export class LogEntry {
   entryDate: Date = new Date();
-  message = "";
+  message = '';
   level: LogLevel = LogLevel.All;
   logWithDate = true;
   extraInfo: any[] = [];
 
   buildLogString(): string {
-    let msg = "";
+    let msg = '';
 
     if (this.logWithDate) {
-      msg += "Date - " + this.entryDate;
-      msg += " - Type: " + LogLevel[this.level];
-      msg += " - Message: " + this.message;
+      msg += 'Date - ' + this.entryDate;
+      msg += ' - Type: ' + LogLevel[this.level];
+      msg += ' - Message: ' + this.message;
       if (this.extraInfo.length > 0) {
-        msg += " - Extra Info " + this.formatParams(this.extraInfo);
+        msg += ' - Extra Info ' + this.formatParams(this.extraInfo);
       }
     }
     return msg;
   }
 
   formatParams(...param: any[]): string {
-    let msg = "";
-    msg += param.join(", ");
+    let msg = '';
+    msg += param.join(', ');
     return msg;
   }
 }
@@ -41,6 +42,10 @@ export class LogEntry {
 @Injectable()
 export class LoggingService {
   logLevel: LogLevel = LogLevel.All;
+
+  constructor(private http: Http) {
+
+  }
 
   shouldLog(level: LogLevel): boolean {
     let ret = false;
@@ -76,7 +81,7 @@ export class LoggingService {
     return msg;
   }
 
-  writeLog(msg: string, level: LogLevel, ...params: any[]): void {    
+  writeLog(msg: string, level: LogLevel, ...params: any[]): string {    
     
     if (this.shouldLog(level)) {
       
@@ -87,26 +92,39 @@ export class LoggingService {
 
       switch (level) {
         case LogLevel.All:
-          console.log(this.log(entry.buildLogString()));
-          break;
+          return this.log(entry.buildLogString());
         case LogLevel.Error:
-          console.log(this.error(entry.buildLogString()));
-          break;
+          return this.error(entry.buildLogString());          
         case LogLevel.Info:
-          console.log(this.info(entry.buildLogString()));
-          break;
+          return this.info(entry.buildLogString());
         case LogLevel.Debug:
-          console.log(this.debug(entry.buildLogString()));
-          break;
+          return this.debug(entry.buildLogString());          
         case LogLevel.Fatal:
-          console.log(this.fatal(entry.buildLogString()));
-          break;
+          return this.fatal(entry.buildLogString());
         case LogLevel.Warn:
-          console.log(this.fatal(entry.buildLogString()));
-          break;
+          return this.fatal(entry.buildLogString());
         default:
           break;
       }
     }    
   }
+
+  EntryToApiLog(msg: string, level: LogLevel, ...params: any[]): void {
+    const errorMsg = this.writeLog(msg, level, params);
+    const url = 'http://localhost:49935/api/Log/Post';
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
+
+    this.http.post(url, JSON.stringify(errorMsg), options).subscribe(data => console.log(data), 
+    error => console.log(error), () => console.log('logging to database successful'));
+  }
+
+  ClearApiLog() {
+    const url = 'http://localhost:49935/api/Log/Delete';
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const options = new RequestOptions({ headers: headers });
+    this.http.delete(url, options).subscribe(data => console.log(data), 
+    error => console.log(error), () => console.log('Deleted'));
+  }
+
 }

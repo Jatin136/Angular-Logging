@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { LoggingService, LogLevel } from './logging.service';
-import { LoggerClass, LogPublisher, LocalStorage } from './logPublisher';
+import { LoggerClass, LogPublisher, LocalStorage, ApiLog } from './logPublisher';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +11,12 @@ export class AppComponent {
 
   loggerClass: LoggerClass;
   localStorage: LocalStorage;
+  apiLog: ApiLog;
 
   constructor (private loggingService: LoggingService) { 
     this.loggerClass = new LoggerClass(this.loggingService);
     this.localStorage = new LocalStorage(this.loggingService);
+    this.apiLog = new ApiLog(this.loggingService);
   }
   
   DeleteLocalStorageLog() {
@@ -51,5 +53,13 @@ export class AppComponent {
 
   DebugLog() {
     this.loggerClass.log('test log', LogLevel.Debug, 'j', 'patel');
+  }
+
+  ApiLogEntry() {
+    this.apiLog.log('api log', LogLevel.Error, 'j', 'patel');
+  }
+
+  ClearApiLogs() {
+    this.apiLog.clear();
   }
 }

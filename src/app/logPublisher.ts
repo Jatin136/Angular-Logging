@@ -14,7 +14,7 @@ export class LoggerClass extends LogPublisher {
     }
 
     log(msg: string, logLevel: LogLevel, ...params: any[]) {
-        this.loggingService.writeLog(msg, logLevel, params);
+       console.log(this.loggingService.writeLog(msg, logLevel, params));
     }
 
     logType: string;
@@ -48,11 +48,15 @@ export class LocalStorage extends LogPublisher {
 }
 
 export class ApiLog extends LogPublisher {    
+
+    constructor(private loggingService: LoggingService) {
+        super();
+    }
     
     clear() {
-        throw new Error("Method not implemented.");
+        this.loggingService.ClearApiLog();
     }
     log(msg: string, logLevel: LogLevel, ...params: any[]) {
-        throw new Error("Method not implemented.");
+        this.loggingService.EntryToApiLog(msg, logLevel, params);
     }
 }
